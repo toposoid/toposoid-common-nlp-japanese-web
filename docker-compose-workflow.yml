@@ -8,7 +8,7 @@ networks:
         - subnet: 172.30.0.0/24
 
 services:
-  toposoid-common-nlp-japaneseh-web:
+  toposoid-common-nlp-japanese-web:
     image: toposoid-common-nlp-japanese-web:0.2
     tty: true
     environment:
