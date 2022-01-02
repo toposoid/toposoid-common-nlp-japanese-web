@@ -21,11 +21,10 @@ import threading
 
 #This module provides utilities for the Jaoanese version of WordNet
 
-class WordNetUtils(threading.Thread): 
+class WordNetUtils(): 
 
     conn = None
-    def __init__(self):
-        threading.Thread.__init__(self)
+    def __init__(self):        
         self.conn = sqlite3.connect("wnjpn.db", check_same_thread=False)
         
     #Extract synonyms of parameter words using WordNet
