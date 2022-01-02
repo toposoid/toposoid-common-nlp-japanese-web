@@ -1,0 +1,24 @@
+version: '3'
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/24
+
+services:
+  toposoid-common-nlp-japanese-web:
+    image: toposoid/toposoid-common-nlp-japanese-web:0.2
+    environment:
+      - SYNONYM_NOUN_SIMILARITY_THRESHHOLD=0.52
+      - SYNONYM_VERB_SIMILARITY_THRESHHOLD=0.52
+      - WORD2VEC_SIMILARITY_THRESHHOLD=0.68
+    networks:
+      app_net:
+        ipv4_address: 172.30.0.2
+    ports:
+      - 9006:9006
+
+
+

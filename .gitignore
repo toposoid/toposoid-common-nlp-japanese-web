@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+entity_vector.model.bin
+wnjpn.db
+chive-*
+
+.vscode/
+.DS_Store
+
+
