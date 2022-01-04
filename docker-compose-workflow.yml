@@ -15,6 +15,7 @@ services:
       - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP=0.52
       - SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP=0.52
       - WORD2VEC_SIMILARITY_THRESHHOLD_JP=0.68
+      - CHIVE_MODEL_VERSION=chive-1.2-mc90.kv
     networks:
       app_net:
         ipv4_address: 172.30.0.2

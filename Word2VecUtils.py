@@ -25,7 +25,7 @@ class Word2VecUtils():
     def __init__(self) :
         modelDir = './entity_vector.model.bin'
         self.model = KeyedVectors.load_word2vec_format(modelDir, binary=True)    
-        self.chiveModel = KeyedVectors.load("./chive-1.2-mc15.kv")
+        self.chiveModel = KeyedVectors.load("./" + os.environ["CHIVE_MODEL_VERSION"])
     
     #This function calculates the similarity between two words given by a parameter in Word2Vec
     def calcSimilarityByWord2Vec(self, word, synonym):
