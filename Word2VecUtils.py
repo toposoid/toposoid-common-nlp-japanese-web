@@ -37,7 +37,7 @@ class Word2VecUtils():
             return 0.0
     #This function gets synonyms with high similarity from Word2Vec.
     def getSimilarWords(self, word):
-        thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD"])
+        thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD_JP"])
         similarWords = set()
         for row in self.model.most_similar(positive=[word]):
             if row[1] > thresholdW2V and not row[0] == word:
