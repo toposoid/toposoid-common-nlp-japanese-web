@@ -39,11 +39,12 @@ class Word2VecUtils():
     def getSimilarWords(self, word):
         thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD_JP"])
         similarWords = set()
-        for row in self.model.most_similar(positive=[word]):
-            if row[1] > thresholdW2V and not row[0] == word:
-                similarWords.add(row[0])
+        if word in self.model.index_to_key:
+            for row in self.model.most_similar(positive=[word]):
+                if row[1] > thresholdW2V and not row[0] == word:
+                    similarWords.add(row[0])
         
-        if len(similarWords) == 0:
+        if len(similarWords) == 0 and word in self.chiveModel.index_to_key:
             for row in self.chiveModel.most_similar(positive=[word]):
                 if row[1] > thresholdW2V and not row[0] == word:
                     similarWords.add(row[0])

@@ -53,6 +53,14 @@ def test_VocabularyNotFoundInWordNet():
     synonymList = SynonymList.parse_obj(response.json())
     assert synonymList.synonyms.sort() == ['了承', '承諾', '約束'].sort()
 
+def test_VocabularyNotFoundInWord2Vec():    
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "秀逸だ"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())
+    assert synonymList.synonyms == []
+
 def test_ChiveModel():    
     response = client.post("/getSynonyms",
                         headers={"Content-Type": "application/json"},
