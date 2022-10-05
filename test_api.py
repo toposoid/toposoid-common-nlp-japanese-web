@@ -70,4 +70,11 @@ def test_ChiveModel():
     assert synonymList.synonyms.sort() == ['セスアップ', 'リスティング', '検索エンジン'].sort()
 
 
-#W2Vに語彙がない場合　
+def test_ChikkarSynonym():
+    response = client.post("/getSynonyms",
+                        headers={"Content-Type": "application/json"},
+                        json={"word": "ケータイ"})    
+    assert response.status_code == 200
+    synonymList = SynonymList.parse_obj(response.json())    
+    assert synonymList.synonyms.sort() == ['mobile', '携帯', '携帯電話', 'モバイル'].sort()
+    
