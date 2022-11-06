@@ -4,3 +4,4 @@ pydantic==1.8.2
 pytest==6.2.5
 pysqlite3==0.4.6
 chikkarpy==0.1.1
+sentence-transformers==2.2.2

@@ -134,4 +134,5 @@ chive-*
 .vscode/
 .DS_Store
 
-
+logs/*
+!.gitkeep

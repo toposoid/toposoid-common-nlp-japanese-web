@@ -23,10 +23,16 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 
 ## Usage
 ```bash
+#getSynonym
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "SEO"
 }
 ' http://localhost:9006/getSynonyms
+#getFeatureVector
+curl -X POST -H "Content-Type: application/json" -d '{
+    "sentence": "これはテストです。"
+}
+' http://localhost:9006/getFeatureVector
 ```
 
 # Note
