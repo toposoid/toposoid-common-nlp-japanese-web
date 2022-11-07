@@ -23,7 +23,7 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 
 ## Usage
 ```bash
-#getSynonym
+#getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "SEO"
 }
@@ -38,6 +38,7 @@ curl -X POST -H "Content-Type: application/json" -d '{
 # Note
 * This microservice uses 9006 as the default port.
 * Currently, only the function to get synonyms is open to the public in this API.
+* The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
 toposoid/scala-common-nlp-japanese-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
