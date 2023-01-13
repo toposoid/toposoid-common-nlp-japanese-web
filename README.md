@@ -39,7 +39,8 @@ curl -X POST -H "Content-Type: application/json" -d '{
 
 # Note
 * This microservice uses 9006 as the default port.
-* Currently, only the function to get synonyms is open to the public in this API.
+* The Bert model used in this repository is below.　https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+* You can change the SentenceBERT model by changing the environment variable TOPOSOID_SENTENCEBERT_MODEL_JP.
 * The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
