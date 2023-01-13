@@ -7,6 +7,8 @@ This Microservice provides an NLP function that handles Japanese and outputs the
 
 <img width="1202" src="https://user-images.githubusercontent.com/82787843/148643043-b06a0fa8-5d65-496f-9bee-a08efc8c3a57.png">
 
+<img width="948" src="https://user-images.githubusercontent.com/82787843/212320227-766b6524-5043-4c99-ac0f-106acae34821.png">
+
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
