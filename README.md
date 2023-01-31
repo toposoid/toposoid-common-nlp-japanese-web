@@ -7,6 +7,8 @@ This Microservice provides an NLP function that handles Japanese and outputs the
 
 <img width="1202" src="https://user-images.githubusercontent.com/82787843/148643043-b06a0fa8-5d65-496f-9bee-a08efc8c3a57.png">
 
+<img width="948" src="https://user-images.githubusercontent.com/82787843/212320227-766b6524-5043-4c99-ac0f-106acae34821.png">
+
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
@@ -23,15 +25,23 @@ It takes more than 20 minutes to pull the Docker image for the first time.
 
 ## Usage
 ```bash
+#getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "SEO"
 }
 ' http://localhost:9006/getSynonyms
+#getFeatureVector
+curl -X POST -H "Content-Type: application/json" -d '{
+    "sentence": "これはテストです。"
+}
+' http://localhost:9006/getFeatureVector
 ```
 
 # Note
 * This microservice uses 9006 as the default port.
-* Currently, only the function to get synonyms is open to the public in this API.
+* The Bert model used in this repository is below.　https://huggingface.co/sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+* You can change the SentenceBERT model by changing the environment variable TOPOSOID_SENTENCEBERT_MODEL_JP.
+* The vector dimension of getFeatureVector's response defaults to 768.
 
 ## License
 toposoid/scala-common-nlp-japanese-web is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).

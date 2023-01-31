@@ -15,27 +15,33 @@
  '''
 
 from fastapi import FastAPI
-from model import NormalizedWord, SynonymList
+from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from WordNetUtils import WordNetUtils
 from Word2VecUtils import Word2VecUtils
+from ChikkarUtils import ChikkarUtils
+from SentenceBertUtils import SentenceBertUtils
+
+
 import os
 from logging import config
 config.fileConfig('logging.conf')
 import logging
 LOG = logging.getLogger(__name__)
 import traceback
-
+from typing import List
 
 app = FastAPI(
     title="toopsoid-common-nlp-japanese-web",
-    version="0.1-SNAPSHOT"
+    version="0.4-SNAPSHOT"
 )
 
 wordNetUtils = WordNetUtils()
 word2VecUtils = Word2VecUtils()
+chikkarUtils = ChikkarUtils()
+sentenceBertUtils = SentenceBertUtils()
 
 app.add_middleware(
     CORSMiddleware,
@@ -54,6 +60,8 @@ def getSynonyms(normalizedWord:NormalizedWord):
         thresholdVerb = float(os.environ["SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP"])
         if not normalizedWord.word.strip() == "":
             nounSynonums, verbSynonyms = wordNetUtils.getSynonyms(normalizedWord.word)
+            nounSynonums = nounSynonums | chikkarUtils.getSynonyms(normalizedWord.word) #Chikkar is nominal only            
+
             if len(nounSynonums) == 0 and len(verbSynonyms) == 0:
                 synonyms = word2VecUtils.getSimilarWords(normalizedWord.word)
             else:
@@ -68,3 +76,12 @@ def getSynonyms(normalizedWord:NormalizedWord):
         LOG.error(traceback.format_exc())
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
+
+@app.post("/getFeatureVector")
+def getFeatureVector(input:SingleSentence):
+    try:        
+        vector = sentenceBertUtils.getFeatureVector(input.sentence)
+        return JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+    except Exception as e:
+        LOG.error(traceback.format_exc())
+        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})

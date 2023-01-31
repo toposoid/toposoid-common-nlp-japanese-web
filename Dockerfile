@@ -14,7 +14,10 @@ RUN apt-get update \
 && mv -f /tmp/entity_vector.model.bin ./ \
 && mv -f /tmp/wnjpn.db ./ \
 && mv -f /tmp/chive-1.2-mc15.kv ./ \
-&& mv -f /tmp/chive-1.2-mc15.kv.vectors.npy ./ 
+&& mv -f /tmp/chive-1.2-mc15.kv.vectors.npy ./ \
+&& mkdir -p sentence-transformers \
+&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2 ./sentence-transformers/
+
 
 
 COPY ./docker-entrypoint.sh /app/
