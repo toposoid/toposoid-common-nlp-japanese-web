@@ -9,7 +9,7 @@ networks:
 
 services:
   toposoid-common-nlp-japanese-web:
-    image: toposoid-common-nlp-japanese-web:0.5
+    image: toposoid-common-nlp-japanese-web:0.4
     tty: true
     environment:
       - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP=0.52
