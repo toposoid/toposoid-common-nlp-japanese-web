@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-japanese:3.9
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT
 
 WORKDIR /app
 ARG TARGET_BRANCH
@@ -15,10 +15,9 @@ RUN apt-get update \
 && mv -f /tmp/wnjpn.db ./ \
 && mv -f /tmp/chive-1.2-mc15.kv ./ \
 && mv -f /tmp/chive-1.2-mc15.kv.vectors.npy ./ \
-&& mkdir -p sentence-transformers \
-&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2 ./sentence-transformers/
-
-
+&& mkdir -p models \
+&& mkdir -p models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2 \
+&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2/* ./models/paraphrase-multilingual-mpnet-base-v2/
 
 COPY ./docker-entrypoint.sh /app/
 ENTRYPOINT ["/app/docker-entrypoint.sh"]

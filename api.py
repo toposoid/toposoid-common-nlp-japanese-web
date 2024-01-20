@@ -56,8 +56,8 @@ app.add_middleware(
 def getSynonyms(normalizedWord:NormalizedWord):
     try:
         synonyms = []
-        thresholdNoun = float(os.environ["SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP"])
-        thresholdVerb = float(os.environ["SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP"])
+        thresholdNoun = float(os.environ["TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP"])
+        thresholdVerb = float(os.environ["TOPOSOID_SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP"])
         if not normalizedWord.word.strip() == "":
             nounSynonums, verbSynonyms = wordNetUtils.getSynonyms(normalizedWord.word)
             nounSynonums = nounSynonums | chikkarUtils.getSynonyms(normalizedWord.word) #Chikkar is nominal only            
