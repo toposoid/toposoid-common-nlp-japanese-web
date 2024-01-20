@@ -17,7 +17,7 @@ RUN apt-get update \
 && mv -f /tmp/chive-1.2-mc15.kv.vectors.npy ./ \
 && mkdir -p models \
 && mkdir -p models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2 \
-&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2/* ./models/sentence-transformers_paraphrase-multilingual-mpnet-base-v/
+&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2/* ./models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2/
 
 COPY ./docker-entrypoint.sh /app/
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
