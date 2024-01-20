@@ -20,7 +20,7 @@ from sentence_transformers import SentenceTransformer
 
 class SentenceBertUtils():
     model = None
-    def __init__(self) :
+    def __init__(self) :        
         self.model = SentenceTransformer(os.environ["TOPOSOID_SENTENCEBERT_MODEL_JP"])        
 
     def getFeatureVector(self, sentence):

@@ -11,11 +11,12 @@ services:
   toposoid-common-nlp-japanese-web:
     image: toposoid/toposoid-common-nlp-japanese-web:0.5-SNAPSHOT
     environment:
-      - SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP=0.52
-      - SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP=0.52
-      - WORD2VEC_SIMILARITY_THRESHHOLD_JP=0.68
-      - CHIVE_MODEL_VERSION=chive-1.2-mc15.kv
+      - TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP=0.52
+      - TOPOSOID_SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP=0.52
+      - TOPOSOID_WORD2VEC_SIMILARITY_THRESHHOLD_JP=0.68
+      - TOPOSOID_CHIVE_MODEL_VERSION=chive-1.2-mc15.kv
       - TOPOSOID_SENTENCEBERT_MODEL_JP=sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+      - SENTENCE_TRANSFORMERS_HOME=./models
     networks:
       app_net:
         ipv4_address: 172.30.0.2
