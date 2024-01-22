@@ -22,9 +22,9 @@ jobs:
             cd ${GITHUB_WORKSPACE} && cd ../
             cd ./${{ env.PJ_REPO }}
             docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
-            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
-            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
-            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
+            docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} > /dev/null 2>&1 && :
+            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} > /dev/null 2>&1 && :
+            docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec > /dev/null 2>&1 && :
             docker images 
             docker system prune -f
             docker volume prune -f          
