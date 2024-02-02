@@ -1,12 +1,4 @@
 version: '3'
-networks:
-  app_net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.30.0.0/24
-
 services:
   toposoid-common-nlp-japanese-web:
     image: toposoid/toposoid-common-nlp-japanese-web:0.5-SNAPSHOT-lowspec
@@ -17,9 +9,6 @@ services:
       - TOPOSOID_CHIVE_MODEL_VERSION=chive-1.2-mc15.kv
       - TOPOSOID_SENTENCEBERT_MODEL_JP=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
       - SENTENCE_TRANSFORMERS_HOME=./models
-    networks:
-      app_net:
-        ipv4_address: 172.30.0.2
     ports:
       - 9006:9006
 

@@ -1,7 +1,11 @@
-FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT
+ARG TARGET_BRANCH
+ARG SPEC_LEVEL
+ARG SENTENCE_TRANSFORMER_MODEL
+ARG VECTOR_MODEL
+
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT${SPEC_LEVEL}
 
 WORKDIR /app
-ARG TARGET_BRANCH
 ENV DEPLOYMENT=local
 
 RUN apt-get update \
@@ -13,11 +17,11 @@ RUN apt-get update \
 && pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
 && mv -f /tmp/entity_vector.model.bin ./ \
 && mv -f /tmp/wnjpn.db ./ \
-&& mv -f /tmp/chive-1.2-mc15.kv ./ \
-&& mv -f /tmp/chive-1.2-mc15.kv.vectors.npy ./ \
+&& mv -f /tmp/chive-1.2-mc${VECTOR_MODEL}.kv ./ \
+&& mv -f /tmp/chive-1.2-mc${VECTOR_MODEL}.kv.vectors.npy ./ \
 && mkdir -p models \
-&& mkdir -p models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2 \
-&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2/* ./models/sentence-transformers_paraphrase-multilingual-mpnet-base-v2/
+&& mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
+&& mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/
 
 COPY ./docker-entrypoint.sh /app/
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
