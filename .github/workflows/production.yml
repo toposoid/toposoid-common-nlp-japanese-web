@@ -29,7 +29,8 @@ jobs:
             docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec > /dev/null 2>&1 && :
             docker images 
             docker system prune -f
-            docker volume prune -f          
+            docker volume prune -f
+            sed -i -e "s/###SPEC_LEVEL###//g" Dockerfile-wrokflow        
             docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SPEC_LEVEL="" --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2 --build-arg VECTOR_MODEL=15 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
             docker-compose -f docker-compose-workflow-full.yml up -d
             docker-compose -f docker-compose-workflow-full.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"            

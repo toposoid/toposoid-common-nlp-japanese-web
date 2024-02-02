@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT###SPEC_LEVEL###
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT-lowspec
 
 ARG TARGET_BRANCH
 ARG SENTENCE_TRANSFORMER_MODEL
@@ -22,3 +22,6 @@ RUN apt-get update \
 && mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
 && mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/ \
 && rm -Rf /tmp/*
+
+COPY ./docker-entrypoint.sh /app/
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

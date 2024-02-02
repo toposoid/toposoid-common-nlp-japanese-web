@@ -1,9 +1,8 @@
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT
+
 ARG TARGET_BRANCH
-ARG SPEC_LEVEL
 ARG SENTENCE_TRANSFORMER_MODEL
 ARG VECTOR_MODEL
-
-FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT${SPEC_LEVEL}
 
 WORKDIR /app
 ENV DEPLOYMENT=local
@@ -21,7 +20,8 @@ RUN apt-get update \
 && mv -f /tmp/chive-1.2-mc${VECTOR_MODEL}.kv.vectors.npy ./ \
 && mkdir -p models \
 && mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
-&& mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/
+&& mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/ \
+&& rm -Rf /tmp/*
 
 COPY ./docker-entrypoint.sh /app/
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
