@@ -27,7 +27,8 @@ jobs:
             docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec > /dev/null 2>&1 && :
             docker images 
             docker system prune -f
-            docker volume prune -f          
+            docker volume prune -f 
+            sed -i -e "s/###SPEC_LEVEL###/-lowspec/g" Dockerfile-wrokflow          
             docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SPEC_LEVEL=-lowspec --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --build-arg VECTOR_MODEL=90 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
             docker-compose -f docker-compose-workflow.yml up -d
             docker-compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"
@@ -50,18 +51,16 @@ jobs:
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
-            SPEC_LEVEL=""
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
             VECTOR_MODEL=15
       - name: Build And Push Docker Image For Test
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile
+          file: Dockerfile-lowspec
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
-            SPEC_LEVEL=-lowspec
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
             VECTOR_MODEL=90
