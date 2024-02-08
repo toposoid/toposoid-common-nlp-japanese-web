@@ -5,37 +5,35 @@ This Microservice provides an NLP function that handles Japanese and outputs the
 
 [![Test And Build](https://github.com/toposoid/toposoid-common-nlp-japanese-web/actions/workflows/action.yml/badge.svg)](https://github.com/toposoid/toposoid-common-nlp-japanese-web/actions/workflows/action.yml)
 
-<img width="1202" src="https://user-images.githubusercontent.com/82787843/148643043-b06a0fa8-5d65-496f-9bee-a08efc8c3a57.png">
-
-<img width="948" src="https://user-images.githubusercontent.com/82787843/212320227-766b6524-5043-4c99-ac0f-106acae34821.png">
+<img width="1071"  src="https://github.com/toposoid/toposoid-common-nlp-japanese-web/assets/82787843/549462aa-1fad-42de-af03-ae5a3afd1c2f">
+<img width="1164"  src="https://github.com/toposoid/toposoid-common-nlp-japanese-web/assets/82787843/0c50650d-cc0d-40ac-a347-92ed337d2d4c">
 
 ## Requirements
 * Docker version 20.10.x, or later
 * docker-compose version 1.22.x
 
-### Memory requirements
-* Required: at least 6GB of RAM
-* Required: 10G or higher of HDD
+### Recommended Environment For Standalone
+* Required: at least 4GB of RAM
+* Required: at least 12.2GB of HDD(Docker Image Size)
 
-## Setup
+## Setup For Standalone
 ```bssh
 docker-compose up -d
 ```
-It takes more than 20 minutes to pull the Docker image for the first time.
+The first startup takes a long time until docker pull finishes.
 
 ## Usage
 ```bash
 #getSynonyms
 curl -X POST -H "Content-Type: application/json" -d '{
     "word": "SEO"
-}
-' http://localhost:9006/getSynonyms
+}' http://localhost:9006/getSynonyms
 #getFeatureVector
 curl -X POST -H "Content-Type: application/json" -d '{
     "sentence": "これはテストです。"
-}
-' http://localhost:9006/getFeatureVector
+}' http://localhost:9006/getFeatureVector
 ```
+* ref. http://localhost:9006/docs
 
 # Note
 * This microservice uses 9006 as the default port.
