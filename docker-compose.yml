@@ -1,7 +1,7 @@
 version: '3'
 services:
   toposoid-common-nlp-japanese-web:
-    image: toposoid/toposoid-common-nlp-japanese-web:0.5-SNAPSHOT-lowspec
+    image: toposoid/toposoid-common-nlp-japanese-web:0.5
     environment:
       - TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP=0.52
       - TOPOSOID_SYNONYM_VERB_SIMILARITY_THRESHHOLD_JP=0.52
