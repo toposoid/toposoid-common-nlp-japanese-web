@@ -1,13 +1,15 @@
 name: Test And Build
 on:
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
-      - feature
+      - main
   workflow_dispatch:
 env:
   PJ_ACTOR: toposoid
   PJ_REPO: toposoid-common-nlp-japanese-web
-  PJ_BRANCH: feature
+  PJ_BRANCH: main
   PJ_VERSION: 0.5
 jobs:
   unit-test_toposoid-common-nlp-japanese-web:
@@ -27,11 +29,11 @@ jobs:
             docker rmi --force toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec > /dev/null 2>&1 && :
             docker images 
             docker system prune -f
-            docker volume prune -f 
-            sed -i -e "s/###SPEC_LEVEL###/-lowspec/g" Dockerfile-workflow          
-            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SPEC_LEVEL=-lowspec --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --build-arg VECTOR_MODEL=90 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
-            docker-compose -f docker-compose-workflow.yml up -d
-            docker-compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"
+            docker volume prune -f
+            sed -i -e "s/###SPEC_LEVEL###//g" Dockerfile-workflow
+            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2 --build-arg VECTOR_MODEL=15 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} -f Dockerfile-workflow .
+            docker-compose -f docker-compose-workflow-full.yml up -d
+            docker-compose -f docker-compose-workflow-full.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"            
             docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
             docker rmi --force ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}
       - name: Docker meta
@@ -65,3 +67,4 @@ jobs:
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
             VECTOR_MODEL=90
+

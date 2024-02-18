@@ -25,7 +25,7 @@ class Word2VecUtils():
     def __init__(self) :
         modelDir = './entity_vector.model.bin'
         self.model = KeyedVectors.load_word2vec_format(modelDir, binary=True)    
-        self.chiveModel = KeyedVectors.load("./" + os.environ["CHIVE_MODEL_VERSION"])
+        self.chiveModel = KeyedVectors.load("./" + os.environ["TOPOSOID_CHIVE_MODEL_VERSION"])
     
     #This function calculates the similarity between two words given by a parameter in Word2Vec
     def calcSimilarityByWord2Vec(self, word, synonym):
@@ -37,7 +37,7 @@ class Word2VecUtils():
             return 0.0
     #This function gets synonyms with high similarity from Word2Vec.
     def getSimilarWords(self, word):
-        thresholdW2V = float(os.environ["WORD2VEC_SIMILARITY_THRESHHOLD_JP"])
+        thresholdW2V = float(os.environ["TOPOSOID_WORD2VEC_SIMILARITY_THRESHHOLD_JP"])
         similarWords = set()
         if word in self.model.index_to_key:
             for row in self.model.most_similar(positive=[word]):

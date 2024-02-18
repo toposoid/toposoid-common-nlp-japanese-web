@@ -1,7 +1,10 @@
-FROM toposoid/python-nlp-japanese:3.9
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT###SPEC_LEVEL###
+
+ARG TARGET_BRANCH
+ARG SENTENCE_TRANSFORMER_MODEL
+ARG VECTOR_MODEL
 
 WORKDIR /app
-ARG TARGET_BRANCH
 ENV DEPLOYMENT=local
 
 RUN apt-get update \
@@ -13,7 +16,9 @@ RUN apt-get update \
 && pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
 && mv -f /tmp/entity_vector.model.bin ./ \
 && mv -f /tmp/wnjpn.db ./ \
-&& mv -f /tmp/chive-1.2-mc90.kv ./ \
-&& mv -f /tmp/chive-1.2-mc90.kv.vectors.npy ./ \
-&& mkdir -p sentence-transformers \
-&& mv -f /tmp/paraphrase-multilingual-mpnet-base-v2 ./sentence-transformers/
+&& mv -f /tmp/chive-1.2-mc${VECTOR_MODEL}.kv ./ \
+&& mv -f /tmp/chive-1.2-mc${VECTOR_MODEL}.kv.vectors.npy ./ \
+&& mkdir -p models \
+&& mkdir -p models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL} \
+&& mv -f /tmp/${SENTENCE_TRANSFORMER_MODEL}/* ./models/sentence-transformers_${SENTENCE_TRANSFORMER_MODEL}/ \
+&& rm -Rf /tmp/*
