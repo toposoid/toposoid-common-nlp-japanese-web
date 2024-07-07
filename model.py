@@ -28,3 +28,6 @@ class SingleSentence(BaseModel):
 
 class FeatureVector(BaseModel):
     vector:List[float]
+
+class TransversalState(BaseModel):
+    username:str

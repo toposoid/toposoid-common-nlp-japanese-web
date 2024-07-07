@@ -14,8 +14,8 @@
   limitations under the License.
  '''
 
-from fastapi import FastAPI
-from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector
+from fastapi import FastAPI, Header
+from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector, TransversalState
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -23,6 +23,8 @@ from WordNetUtils import WordNetUtils
 from Word2VecUtils import Word2VecUtils
 from ChikkarUtils import ChikkarUtils
 from SentenceBertUtils import SentenceBertUtils
+from typing import Optional
+from utils import formatMessageForLogger
 
 
 import os
@@ -35,7 +37,7 @@ from typing import List
 
 app = FastAPI(
     title="toopsoid-common-nlp-japanese-web",
-    version="0.4-SNAPSHOT"
+    version="0.6-SNAPSHOT"
 )
 
 wordNetUtils = WordNetUtils()
@@ -53,7 +55,8 @@ app.add_middleware(
 
 # This API is for getting synonyms
 @app.post("/getSynonyms")
-def getSynonyms(normalizedWord:NormalizedWord):
+def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Optional[str] = Header(None, convert_underscores=False)):
+    transversalState = TransversalState.parse_raw(X_TOPOSOID_TRANSVERSAL_STATE.replace("'", "\""))
     try:
         synonyms = []
         thresholdNoun = float(os.environ["TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP"])
@@ -71,17 +74,22 @@ def getSynonyms(normalizedWord:NormalizedWord):
                 for synonym in verbSynonyms:
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                         synonyms.append(synonym)    
-        return JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
+        response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
+        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.username),extra={"tab":"\t"})
+        return response
     except Exception as e:
-        LOG.error(traceback.format_exc())
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username),extra={"tab":"\t"})
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
 
 @app.post("/getFeatureVector")
-def getFeatureVector(input:SingleSentence):
+def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optional[str] = Header(None, convert_underscores=False)):
+    transversalState = TransversalState.parse_raw(X_TOPOSOID_TRANSVERSAL_STATE.replace("'", "\""))
     try:        
         vector = sentenceBertUtils.getFeatureVector(input.sentence)
-        return JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+        response = JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.username),extra={"tab":"\t"})
+        return response
     except Exception as e:
-        LOG.error(traceback.format_exc())
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username),extra={"tab":"\t"})
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
