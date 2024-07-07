@@ -15,15 +15,18 @@
  '''
 from fastapi.testclient import TestClient
 from api import app
-from model import NormalizedWord, SynonymList, FeatureVector
+from model import NormalizedWord, SynonymList, FeatureVector, TransversalState
 import pytest
 import os
+from fastapi.encoders import jsonable_encoder
 
 #This is a unit test module
 client = TestClient(app)
+transversalState = str(jsonable_encoder(TransversalState(username="guest")))
+
 def test_EmptyWord():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": ""})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -31,7 +34,7 @@ def test_EmptyWord():
 
 def test_SimpleVerb():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "論ずる"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -40,7 +43,7 @@ def test_SimpleVerb():
 
 def test_SimpleNoun():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "映画"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -48,7 +51,7 @@ def test_SimpleNoun():
 
 def test_VocabularyNotFoundInWordNet():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "確約"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -56,7 +59,7 @@ def test_VocabularyNotFoundInWordNet():
 
 def test_VocabularyNotFoundInWord2Vec():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "秀逸だ"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -64,7 +67,7 @@ def test_VocabularyNotFoundInWord2Vec():
 
 def test_ChiveModel():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "SEO"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -73,7 +76,7 @@ def test_ChiveModel():
 
 def test_ChikkarSynonym():
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "ケータイ"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())    
@@ -82,7 +85,7 @@ def test_ChikkarSynonym():
 def test_getFeatureVector():
     import math
     response = client.post("/getFeatureVector",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"sentence": "これはテストですよ。"})    
     assert response.status_code == 200
     featureVector = FeatureVector.parse_obj(response.json())
