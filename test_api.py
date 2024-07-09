@@ -13,9 +13,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  '''
+
 from fastapi.testclient import TestClient
 from api import app
-from model import NormalizedWord, SynonymList, FeatureVector, TransversalState
+from model import SynonymList, FeatureVector, TransversalState
 import pytest
 import os
 from fastapi.encoders import jsonable_encoder
@@ -24,7 +25,7 @@ from fastapi.encoders import jsonable_encoder
 client = TestClient(app)
 transversalState = str(jsonable_encoder(TransversalState(username="guest")))
 
-def test_EmptyWord():    
+def test_EmptyWord():  
     response = client.post("/getSynonyms",
                         headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": ""})    
@@ -96,5 +97,3 @@ def test_getFeatureVector():
         
     x = False in list(map(lambda x: math.isclose(x[0], x[1], abs_tol=0.00001), zip(featureVector.vector, correctVector)))
     assert not x
-    
-
