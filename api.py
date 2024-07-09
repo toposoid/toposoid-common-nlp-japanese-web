@@ -25,11 +25,11 @@ from ChikkarUtils import ChikkarUtils
 from SentenceBertUtils import SentenceBertUtils
 from typing import Optional
 from utils import formatMessageForLogger
-
+import yaml
 
 import os
 from logging import config
-config.fileConfig('logging.conf')
+config.dictConfig(yaml.load(open("logging.yml", encoding="utf-8").read(), Loader=yaml.SafeLoader))
 import logging
 LOG = logging.getLogger(__name__)
 import traceback
@@ -75,10 +75,10 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                         synonyms.append(synonym)    
         response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
-        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.username),extra={"tab":"\t"})
+        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.username))
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username),extra={"tab":"\t"})
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username))
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
 
@@ -88,8 +88,8 @@ def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optiona
     try:        
         vector = sentenceBertUtils.getFeatureVector(input.sentence)
         response = JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
-        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.username),extra={"tab":"\t"})
+        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.username))
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username),extra={"tab":"\t"})
+        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.username))
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
