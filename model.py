@@ -30,4 +30,7 @@ class FeatureVector(BaseModel):
     vector:List[float]
 
 class TransversalState(BaseModel):
-    username:str
+    userId: str
+    roleId: int
+    username: str
+    csrfToken: str
