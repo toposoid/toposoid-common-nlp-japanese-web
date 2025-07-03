@@ -16,7 +16,8 @@
 
 from fastapi.testclient import TestClient
 from api import app
-from model import SynonymList, FeatureVector, TransversalState
+from model import SynonymList, FeatureVector
+from ToposoidCommon.model import TransversalState
 import pytest
 import os
 from fastapi.encoders import jsonable_encoder
