@@ -1,4 +1,4 @@
-FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT###SPEC_LEVEL###
+FROM toposoid/python-nlp-japanese:0.5-SNAPSHOT
 
 ARG TARGET_BRANCH
 ARG SENTENCE_TRANSFORMER_MODEL
