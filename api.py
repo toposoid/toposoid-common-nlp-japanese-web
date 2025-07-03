@@ -1,18 +1,18 @@
 '''
-  Copyright 2021 Linked Ideal LLC.[https://linked-ideal.com/]
+  Copyright (C) 2025  Linked Ideal LLC.[https://linked-ideal.com/]
  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, version 3.
  
-      http://www.apache.org/licenses/LICENSE-2.0
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
- '''
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
 
 from fastapi import FastAPI, Header
 from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector, TransversalState
@@ -24,16 +24,21 @@ from Word2VecUtils import Word2VecUtils
 from ChikkarUtils import ChikkarUtils
 from SentenceBertUtils import SentenceBertUtils
 from typing import Optional
-from utils import formatMessageForLogger
-import yaml
+from ToposoidCommon.model import StatusInfo
+#from utils import formatMessageForLogger
+#import yaml
 
 import os
-from logging import config
-config.dictConfig(yaml.load(open("logging.yml", encoding="utf-8").read(), Loader=yaml.SafeLoader))
-import logging
-LOG = logging.getLogger(__name__)
+#rom logging import config
+#config.dictConfig(yaml.load(open("logging.yml", encoding="utf-8").read(), Loader=yaml.SafeLoader))
+#import logging
+#LOG = logging.getLogger(__name__)
 import traceback
-from typing import List
+#from typing import List
+
+import ToposoidCommon as tc
+from typing import Optional
+LOG = tc.LogUtils(__name__)
 
 app = FastAPI(
     title="toopsoid-common-nlp-japanese-web",
@@ -75,10 +80,10 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                         synonyms.append(synonym)    
         response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
-        LOG.info(formatMessageForLogger("Getting synonym completed.", transversalState.userId))
+        LOG.info("Getting synonym completed.", transversalState)
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.userId))
+        LOG.error(traceback.format_exc(), transversalState)
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
 
 
@@ -88,8 +93,8 @@ def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optiona
     try:        
         vector = sentenceBertUtils.getFeatureVector(input.sentence)
         response = JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
-        LOG.info(formatMessageForLogger("Getting feature vector completed.", transversalState.userId))
+        LOG.info("Getting feature vector completed.", transversalState)
         return response
     except Exception as e:
-        LOG.error(formatMessageForLogger(traceback.format_exc(), transversalState.userId))
+        LOG.error(traceback.format_exc(), transversalState)
         return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
