@@ -15,7 +15,8 @@
 '''
 
 from fastapi import FastAPI, Header
-from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector, TransversalState
+from model import NormalizedWord, SynonymList, FeatureVector
+from ToposoidCommon.model import SingleSentence, TransversalState, StatusInfo
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -24,7 +25,6 @@ from Word2VecUtils import Word2VecUtils
 from ChikkarUtils import ChikkarUtils
 from SentenceBertUtils import SentenceBertUtils
 from typing import Optional
-from ToposoidCommon.model import StatusInfo
 #from utils import formatMessageForLogger
 #import yaml
 
@@ -84,7 +84,7 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
         return response
     except Exception as e:
         LOG.error(traceback.format_exc(), transversalState)
-        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
+        return JSONResponse(content=jsonable_encoder(StatusInfo(status="ERROR", message=traceback.format_exc())))
 
 
 @app.post("/getFeatureVector")
@@ -97,4 +97,4 @@ def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optiona
         return response
     except Exception as e:
         LOG.error(traceback.format_exc(), transversalState)
-        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
+        return JSONResponse(content=jsonable_encoder(StatusInfo(status="ERROR", message=traceback.format_exc())))

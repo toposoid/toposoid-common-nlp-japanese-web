@@ -23,14 +23,6 @@ class NormalizedWord(BaseModel):
 class SynonymList(BaseModel):
     synonyms:List[str]
 
-class SingleSentence(BaseModel):
-    sentence:str
-
 class FeatureVector(BaseModel):
     vector:List[float]
 
-class TransversalState(BaseModel):
-    userId: str
-    roleId: int
-    username: str
-    csrfToken: str
