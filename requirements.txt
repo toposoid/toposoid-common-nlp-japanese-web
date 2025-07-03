@@ -1,8 +1,10 @@
-fastapi[all]==0.70.0
+fastapi[all]==0.112.2
 uvicorn[standard]==0.15.0
-pydantic==1.8.2
-pytest==8.0.2
+pydantic==2.8.2
+pytest==7.4.4
 pysqlite3==0.4.6
 chikkarpy==0.1.1
 sentence-transformers==2.2.2
+gensim==4.3.3
+huggingface-hub==0.25.2
 -e git+https://github.com/toposoid/toposoid-python-lib.git@__##GIT_BRANCH##__#egg=ToposoidCommon
