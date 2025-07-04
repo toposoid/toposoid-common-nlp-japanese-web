@@ -15,8 +15,7 @@
 '''
 
 from fastapi import FastAPI, Header
-from model import NormalizedWord, SynonymList, FeatureVector
-from ToposoidCommon.model import SingleSentence, TransversalState, StatusInfo
+from ToposoidCommon.model import SingleSentence, TransversalState, StatusInfo, NormalizedWord, SynonymList, FeatureVector
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
