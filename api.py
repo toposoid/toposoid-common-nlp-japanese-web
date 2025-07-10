@@ -73,9 +73,13 @@ def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Opt
                 synonyms = word2VecUtils.getSimilarWords(normalizedWord.word)
             else:
                 for synonym in nounSynonums:
+                    if synonym == normalizedWord.word.strip(): continue
+                    if synonym in synonyms: continue
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdNoun:
                         synonyms.append(synonym) 
                 for synonym in verbSynonyms:
+                    if synonym == normalizedWord.word.strip(): continue
+                    if synonym in synonyms: continue
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                         synonyms.append(synonym)    
         response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
