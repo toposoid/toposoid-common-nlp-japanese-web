@@ -1,29 +1,33 @@
 '''
-  Copyright 2021 Linked Ideal LLC.[https://linked-ideal.com/]
+  Copyright (C) 2025  Linked Ideal LLC.[https://linked-ideal.com/]
  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, version 3.
  
-      http://www.apache.org/licenses/LICENSE-2.0
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
- '''
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
+
 from fastapi.testclient import TestClient
 from api import app
-from model import NormalizedWord, SynonymList, FeatureVector
+from ToposoidCommon.model import TransversalState, SynonymList, FeatureVector
 import pytest
 import os
+from fastapi.encoders import jsonable_encoder
 
 #This is a unit test module
 client = TestClient(app)
-def test_EmptyWord():    
+transversalState = str(jsonable_encoder(TransversalState(userId="test-user", username="guest", roleId=0, csrfToken = "")))
+
+def test_EmptyWord():  
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": ""})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -31,7 +35,7 @@ def test_EmptyWord():
 
 def test_SimpleVerb():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "論ずる"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -40,7 +44,7 @@ def test_SimpleVerb():
 
 def test_SimpleNoun():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "映画"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -48,7 +52,7 @@ def test_SimpleNoun():
 
 def test_VocabularyNotFoundInWordNet():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "確約"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -56,7 +60,7 @@ def test_VocabularyNotFoundInWordNet():
 
 def test_VocabularyNotFoundInWord2Vec():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "秀逸だ"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -64,7 +68,7 @@ def test_VocabularyNotFoundInWord2Vec():
 
 def test_ChiveModel():    
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "SEO"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())
@@ -73,7 +77,7 @@ def test_ChiveModel():
 
 def test_ChikkarSynonym():
     response = client.post("/getSynonyms",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"word": "ケータイ"})    
     assert response.status_code == 200
     synonymList = SynonymList.parse_obj(response.json())    
@@ -82,7 +86,7 @@ def test_ChikkarSynonym():
 def test_getFeatureVector():
     import math
     response = client.post("/getFeatureVector",
-                        headers={"Content-Type": "application/json"},
+                        headers={"Content-Type": "application/json", "X_TOPOSOID_TRANSVERSAL_STATE": transversalState},
                         json={"sentence": "これはテストですよ。"})    
     assert response.status_code == 200
     featureVector = FeatureVector.parse_obj(response.json())
@@ -93,5 +97,3 @@ def test_getFeatureVector():
         
     x = False in list(map(lambda x: math.isclose(x[0], x[1], abs_tol=0.00001), zip(featureVector.vector, correctVector)))
     assert not x
-    
-

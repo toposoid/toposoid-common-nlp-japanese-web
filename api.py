@@ -1,21 +1,21 @@
 '''
-  Copyright 2021 Linked Ideal LLC.[https://linked-ideal.com/]
+  Copyright (C) 2025  Linked Ideal LLC.[https://linked-ideal.com/]
  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, version 3.
  
-      http://www.apache.org/licenses/LICENSE-2.0
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
- '''
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+'''
 
-from fastapi import FastAPI
-from model import NormalizedWord, SynonymList, SingleSentence, FeatureVector
+from fastapi import FastAPI, Header
+from ToposoidCommon.model import SingleSentence, TransversalState, StatusInfo, NormalizedWord, SynonymList, FeatureVector
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
@@ -23,19 +23,25 @@ from WordNetUtils import WordNetUtils
 from Word2VecUtils import Word2VecUtils
 from ChikkarUtils import ChikkarUtils
 from SentenceBertUtils import SentenceBertUtils
-
+from typing import Optional
+#from utils import formatMessageForLogger
+#import yaml
 
 import os
-from logging import config
-config.fileConfig('logging.conf')
-import logging
-LOG = logging.getLogger(__name__)
+#rom logging import config
+#config.dictConfig(yaml.load(open("logging.yml", encoding="utf-8").read(), Loader=yaml.SafeLoader))
+#import logging
+#LOG = logging.getLogger(__name__)
 import traceback
-from typing import List
+#from typing import List
+
+import ToposoidCommon as tc
+from typing import Optional
+LOG = tc.LogUtils(__name__)
 
 app = FastAPI(
     title="toopsoid-common-nlp-japanese-web",
-    version="0.4-SNAPSHOT"
+    version="0.6-SNAPSHOT"
 )
 
 wordNetUtils = WordNetUtils()
@@ -53,7 +59,8 @@ app.add_middleware(
 
 # This API is for getting synonyms
 @app.post("/getSynonyms")
-def getSynonyms(normalizedWord:NormalizedWord):
+def getSynonyms(normalizedWord:NormalizedWord, X_TOPOSOID_TRANSVERSAL_STATE: Optional[str] = Header(None, convert_underscores=False)):
+    transversalState = TransversalState.parse_raw(X_TOPOSOID_TRANSVERSAL_STATE.replace("'", "\""))
     try:
         synonyms = []
         thresholdNoun = float(os.environ["TOPOSOID_SYNONYM_NOUN_SIMILARITY_THRESHHOLD_JP"])
@@ -66,22 +73,31 @@ def getSynonyms(normalizedWord:NormalizedWord):
                 synonyms = word2VecUtils.getSimilarWords(normalizedWord.word)
             else:
                 for synonym in nounSynonums:
+                    if synonym == normalizedWord.word.strip(): continue
+                    if synonym in synonyms: continue
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdNoun:
                         synonyms.append(synonym) 
                 for synonym in verbSynonyms:
+                    if synonym == normalizedWord.word.strip(): continue
+                    if synonym in synonyms: continue
                     if word2VecUtils.calcSimilarityByWord2Vec(normalizedWord.word, synonym) > thresholdVerb:
                         synonyms.append(synonym)    
-        return JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
+        response = JSONResponse(content=jsonable_encoder(SynonymList(synonyms=synonyms)))
+        LOG.info("Getting synonym completed.", transversalState)
+        return response
     except Exception as e:
-        LOG.error(traceback.format_exc())
-        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
+        LOG.error(traceback.format_exc(), transversalState)
+        return JSONResponse(content=jsonable_encoder(StatusInfo(status="ERROR", message=traceback.format_exc())))
 
 
 @app.post("/getFeatureVector")
-def getFeatureVector(input:SingleSentence):
+def getFeatureVector(input:SingleSentence, X_TOPOSOID_TRANSVERSAL_STATE: Optional[str] = Header(None, convert_underscores=False)):
+    transversalState = TransversalState.parse_raw(X_TOPOSOID_TRANSVERSAL_STATE.replace("'", "\""))
     try:        
         vector = sentenceBertUtils.getFeatureVector(input.sentence)
-        return JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+        response = JSONResponse(content=jsonable_encoder(FeatureVector(vector=list(vector))))
+        LOG.info("Getting feature vector completed.", transversalState)
+        return response
     except Exception as e:
-        LOG.error(traceback.format_exc())
-        return JSONResponse({"status": "ERROR", "message": traceback.format_exc()})
+        LOG.error(traceback.format_exc(), transversalState)
+        return JSONResponse(content=jsonable_encoder(StatusInfo(status="ERROR", message=traceback.format_exc())))

@@ -13,6 +13,7 @@ RUN apt-get update \
 && cd toposoid-common-nlp-japanese-web \
 && git fetch origin ${TARGET_BRANCH} \
 && git checkout ${TARGET_BRANCH} \
+&& sed -i s/__##GIT_BRANCH##__/${TARGET_BRANCH}/g requirements.txt \
 && pip install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt \
 && mv -f /tmp/entity_vector.model.bin ./ \
 && mv -f /tmp/wnjpn.db ./ \
