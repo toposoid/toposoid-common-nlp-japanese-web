@@ -58,12 +58,11 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: Dockerfile-lowspec
           push: true
           tags: toposoid/${{ env.PJ_REPO }}:${{ env.PJ_VERSION }}-lowspec
           build-args: |
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
             VECTOR_MODEL=90
-            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}
+            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}-lowspec
 
