@@ -139,3 +139,7 @@ logs/*
 models/
 
 src/
+.devcontainer
+docker-compose-dev.yml
+pyproject.toml
+uv.lock
