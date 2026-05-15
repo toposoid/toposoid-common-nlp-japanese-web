@@ -25,7 +25,7 @@ jobs:
             docker images
             docker system prune -f
             docker volume prune -f
-            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}-lowspec --build-arg SPEC_LEVEL=-lowspec --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --build-arg VECTOR_MODEL=90 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} --load -f Dockerfile-workflow .
+            docker build --build-arg TARGET_BRANCH=${{ env.PJ_BRANCH }} --build-arg BASE_IMAGE_LABEL=0.7-lowspec --build-arg SPEC_LEVEL=-lowspec --build-arg SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2 --build-arg VECTOR_MODEL=90 --tag ${{ env.PJ_REPO }}:${{ env.PJ_VERSION }} --load -f Dockerfile-workflow .
             docker compose -f docker-compose-workflow.yml up -d
             docker compose -f docker-compose-workflow.yml exec -T ${{ env.PJ_REPO }} bash -c "cd ${{ env.PJ_REPO }} && pytest"
             docker rm --force $(docker ps -a -q) > /dev/null 2>&1 && :
@@ -50,7 +50,7 @@ jobs:
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-mpnet-base-v2
             VECTOR_MODEL=15
-            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}
+            BASE_IMAGE_LABEL=0.7
       - name: Build And Push Docker Image For Test
         uses: docker/build-push-action@v5
         with:
@@ -61,5 +61,5 @@ jobs:
             TARGET_BRANCH=${{ env.PJ_BRANCH }}
             SENTENCE_TRANSFORMER_MODEL=paraphrase-multilingual-MiniLM-L12-v2
             VECTOR_MODEL=90
-            BASE_IMAGE_LABEL=${{ env.PJ_VERSION }}-lowspec
+            BASE_IMAGE_LABEL=0.7-lowspec
 
