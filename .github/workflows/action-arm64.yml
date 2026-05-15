@@ -1,4 +1,4 @@
-pyname: Test And Build
+name: Test And Build
 on:
   workflow_call:
 env:
